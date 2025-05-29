@@ -37,22 +37,25 @@ def get_path_and_query_params_dct(path_and_params: str) -> tuple:
 def append_rolls_to_body(rolls: int, sides: int) -> str:
     """Returns a str representation (`Roll: X`) of rolling a n-sides die by
     the number of given rolls"""
-    roll_str = ""
+    roll_str = "<ul>"
 
     for _ in range(rolls):
         roll = randint(1, sides)
-        roll_str += f"Roll: {roll}\n"
-    return roll_str
+        roll_str += f"<li>Roll: {roll}</li>"
+    return roll_str + "</ul>"
 
 
 def get_response_body(request_line: str, http_method: str,
                       path: str, params_dct: dict) -> str:
     """Creates the response body"""
     return (
-        f"Request Line: {request_line}\n"
-        f"HTTP Method: {http_method}\n"
-        f"Path: {path}\n"
-        f"Parameters: {params_dct}\n"
+        "<html><head><title>Dice Rolls</title></head><body>"
+        "<h1>HTTP Request Information</h1>"
+        f"<p><strong>Request Line:</strong> {request_line}</p>"
+        f"<p><strong>HTTP Method:</strong> {http_method}</p>"
+        f"<p><strong>Path:</strong> {path}</p>"
+        f"<p><strong>Parameters:</strong> {params_dct}</p>"
+        "<h2>Rolls:</h2>"
     )
 
 
@@ -60,10 +63,10 @@ def get_response(http_version, response_body: str) -> str:
     """Returns the formatted response headers and body"""
     return (
         f"{http_version} 200 OK\r\n"
-        "Content-Type: text/plain\r\n"
+        "Content-Type: text/html\r\n"
         f"Content-Length: {len(response_body)}\r\n"
         "\r\n"
-        f"{response_body}\n"
+        f"{response_body}</body></html>"
     )
 
 
