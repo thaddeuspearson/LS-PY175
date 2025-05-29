@@ -1,6 +1,6 @@
 """
-Quick and dirty socket script to demostrate a basic socket server that uses
-two query params and responds accordingly.
+Quick and dirty socket script to demonstrate a basic socket server that uses
+query params and responds accordingly.
 """
 import socket
 from random import randint
