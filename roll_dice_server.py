@@ -72,12 +72,10 @@ def handle_requests(server_socket: socket):
     while True:
         client_socket, addr = server_socket.accept()
         print(f"Connection from {addr}")
-
         request = client_socket.recv(1024).decode()
         if not request or 'favicon.ico' in request:
             client_socket.close()
             continue
-
         request_line = request.splitlines()[0]
         http_method, path_and_params, http_version = request_line.split(" ")
         path, params_dct = get_path_and_query_params_dct(path_and_params)
