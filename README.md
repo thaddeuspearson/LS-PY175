@@ -5,7 +5,7 @@ Repository for working through Launch School's PY175 Course
 1. 
 
 ## :memo: Articles
-1. 
+1. [Flask Documentation](https://flask.palletsprojects.com/en/stable/)
 
 ## :clipboard: Notes
 1. 
