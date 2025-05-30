@@ -7,5 +7,7 @@ Repository for working through Launch School's PY175 Course
 ## :memo: Articles
 1. [Flask Documentation](https://flask.palletsprojects.com/en/stable/)
 
+1. [Book Viewer Project Template](https://dicf9ht99spz0.cloudfront.net/py175/zips/book_viewer_starter.zip)
+
 ## :clipboard: Notes
 1. 
