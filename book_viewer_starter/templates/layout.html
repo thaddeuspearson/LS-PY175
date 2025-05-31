@@ -23,7 +23,7 @@
               <a class="pure-menu-heading" href="/">Table of Contents</a>
 
               <ul class="pure-menu-list">
-                {% for chapter in toc %}
+                {% for chapter in g.toc %}
                   <li class="pure-menu-item">
                     <a href="{{ url_for('chapter', chapter_num=loop.index) }}" class="pure-menu-link">{{ chapter }}</a>
                   </li>

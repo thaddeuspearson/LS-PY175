@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, redirect
+from flask import Flask, render_template, g, redirect, request
 
 app = Flask(__name__)
 
@@ -23,10 +23,23 @@ def chapter(chapter_num):
         with open(f"book_viewer/data/chp{chapter_num}.txt", "r") as f:
             chapter = f.read()
 
-        return render_template("chapter.html", toc=g.toc,
+        return render_template("chapter.html",
                                chapter_title=chapter_title, chapter=chapter)
     else:
         return redirect("/")
+
+
+@app.route("/search")
+def search():
+    query = request.args.get("query", '')
+    results = []
+
+    for idx, name in enumerate(g.toc, start=1):
+        with open(f"book_viewer/data/chp{idx}.txt") as f:
+            content = f.read()
+            if query.lower() in content.lower():
+                results.append({"number": idx, "name": name})
+    return render_template('search.html', query=query, results=results)
 
 
 def in_paragraphs(text: str):
