@@ -26,5 +26,13 @@ def chapter(chapter_num):
                            chapter_title=chapter_title, chapter=chapter)
 
 
+def in_paragraphs(text: str):
+    paragraphs = text.split("\n\n")
+    return "\n".join(f"<p>{paragraph}</p>" for paragraph in paragraphs)
+
+
+app.jinja_env.filters["in_paragraphs"] = in_paragraphs
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5003)
