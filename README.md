@@ -9,5 +9,7 @@ Repository for working through Launch School's PY175 Course
 
 1. [Book Viewer Project Template](https://dicf9ht99spz0.cloudfront.net/py175/zips/book_viewer_starter.zip)
 
+1. [Flask Quick Start Guide](https://launchschool.com/gists/b1fd339b)
+
 ## :clipboard: Notes
 1. 
