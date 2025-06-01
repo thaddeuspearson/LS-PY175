@@ -11,8 +11,6 @@ with open("users.yaml", "r") as f:
 
 @app.route('/')
 def index():
-    for value in users.values():
-        print(len(value['interests']))
     total_users = len(users)
     total_interests = reduce(lambda acc, val: acc + len(val['interests']),
                              users.values(), 0)
