@@ -1,4 +1,22 @@
 {% extends "layout.html" %}
 
 {% block content %}
+  <h1>User Information:</h1>
+    <h4>Name:</h4>
+    <p>{{ username }}</p>
+    <h4>Email:</h4> 
+    <p>{{ user.email }}</p>
+    <h4>Interests:</h4>
+    <p>{{ ', '.join(user.interests) }}</p>  
+  <br>
+  <h2>Other Users:</h2>
+    <ul>
+      {% for name in users %}
+        {% if name != username %}
+          <li>
+            <a href="{{ url_for('user_profile', username=name) }}">{{ name }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
 {% endblock %}
