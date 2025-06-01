@@ -5,8 +5,12 @@ import yaml
 
 app = Flask(__name__)
 
-with open("users.yaml", "r") as f:
-    users = yaml.safe_load(f)
+try:
+    with open("users.yaml", "r") as f:
+        users = yaml.safe_load(f)
+except (FileNotFoundError, yaml.YAMLError) as e:
+    print(f"Error loading users data: {e}")
+    users = {}
 
 
 def total_interests(users: dict) -> int:

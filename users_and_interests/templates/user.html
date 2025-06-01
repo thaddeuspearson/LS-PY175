@@ -7,7 +7,7 @@
     <h4>Email:</h4> 
     <p>{{ user.email }}</p>
     <h4>Interests:</h4>
-    <p>{{ ', '.join(user.interests) }}</p>  
+    <p>{{ user.interests | join(', ') }}</p>  
   <br>
   <h2>Other Users:</h2>
     <ul>
