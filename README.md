@@ -12,4 +12,4 @@ Repository for working through Launch School's PY175 Course
 1. [Flask Quick Start Guide](https://launchschool.com/gists/b1fd339b)
 
 ## :clipboard: Notes
-1. 
+1. [Hosted todo app](https://ls-170-sinatra-todos.herokuapp.com/)
