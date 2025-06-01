@@ -15,6 +15,15 @@ def total_interests(users: dict) -> int:
     )
 
 
+@app.context_processor
+def inject_user_data():
+    return {
+        'users': users,
+        'total_users': len(users),
+        'total_interests': total_interests(users)
+    }
+
+
 @app.route('/')
 def home():
     return redirect(url_for("users_list"))
@@ -22,10 +31,7 @@ def home():
 
 @app.route('/users')
 def users_list():
-    return render_template("users.html",
-                           users=users,
-                           total_users=len(users),
-                           total_interests=total_interests(users))
+    return render_template("users.html")
 
 
 @app.route('/users/<username>')
@@ -33,12 +39,7 @@ def user_profile(username):
     user = users.get(username)
     if not user:
         return redirect(url_for('home'))
-    return render_template("user.html",
-                           username=username,
-                           user=users[username],
-                           users=users,
-                           total_users=len(users),
-                           total_interests=total_interests(users))
+    return render_template("user.html", username=username, user=user)
 
 
 if __name__ == '__main__':
