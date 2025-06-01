@@ -34,20 +34,37 @@ def search():
     query = request.args.get("query", '')
     results = []
 
-    for idx, name in enumerate(g.toc, start=1):
-        with open(f"book_viewer/data/chp{idx}.txt") as f:
+    for chapter_idx, chapter_name in enumerate(g.toc, start=1):
+        with open(f"book_viewer/data/chp{chapter_idx}.txt") as f:
             content = f.read()
-            if query.lower() in content.lower():
-                results.append({"number": idx, "name": name})
+            query = query.lower()
+            matches = {}
+
+            for para_idx, paragraph in enumerate(content.split("\n\n"), start=1):
+                search_idx = paragraph.lower().find(query)
+                if search_idx != -1:
+                    matches[para_idx] = paragraph
+
+            if matches:
+                results.append({
+                    "name": chapter_name,
+                    "number": chapter_idx,
+                    "paragraphs": matches
+                })
     return render_template('search.html', query=query, results=results)
 
 
 def in_paragraphs(text: str):
     paragraphs = text.split("\n\n")
-    return "\n".join(f"<p>{paragraph}</p>" for paragraph in paragraphs)
+    return "\n".join(f"<p id={i+1}>{p}</p>" for i, p in enumerate(paragraphs))
+
+
+def bold(text: str, term: str):
+    return text.replace(term, f"<strong>{term}</strong>")
 
 
 app.jinja_env.filters["in_paragraphs"] = in_paragraphs
+app.jinja_env.filters["bold"] = bold
 
 
 @app.errorhandler(404)

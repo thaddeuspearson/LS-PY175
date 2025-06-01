@@ -11,7 +11,16 @@
   <h2 class="content-subhead">Results for '{{ query }}'</h2>
     <ul>
       {% for chapter in results %}
-        <li><a href="{{ url_for('chapter', chapter_num=chapter.number) }}">{{ chapter.name }}</a></li>
+        <li>{{ chapter.name }}
+          <ul>
+            {% for idx, paragraph in chapter.paragraphs.items() %}
+              <li>
+                <a href="{{ url_for('chapter', chapter_num=chapter.number) }}#{{ idx | safe }}">
+                {{ paragraph | bold(query) | safe }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
       {% endfor %}
     </ul>
   {% else %}
