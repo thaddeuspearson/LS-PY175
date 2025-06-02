@@ -1,5 +1,6 @@
 from uuid import uuid4
 from flask import (
+    flash,
     Flask,
     redirect,
     render_template,
@@ -43,6 +44,7 @@ def create_list():
         "todos": []
     })
     session.modified = True
+    flash("The list has been created.", "success")
     return redirect(url_for("get_lists"))
 
 
