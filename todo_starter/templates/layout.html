@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>Todo App</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans">
+        <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/whitespace-reset.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/application.css') }}">
+    </head>
+    <body>
+        <header>
+            <h1>Todo Tracker</h1>
+            <div class="actions">
+                {% block header_links %}{% endblock %}
+            </div>
+        </header>
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </body>
+</html>
