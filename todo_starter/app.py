@@ -38,14 +38,24 @@ def get_lists():
 @app.route("/lists", methods=["POST"])
 def create_list():
     title = request.form["list_title"].strip()
-    session['lists'].append({
-        "id": str(uuid4()),
-        "title": title,
-        "todos": []
-    })
-    session.modified = True
-    flash("The list has been created.", "success")
-    return redirect(url_for("get_lists"))
+
+    if any(lst["title"] == title for lst in session["lists"]):
+        flash("Title must be unique.", "error")
+        return render_template("/new_list.html", title=title)
+
+    if 1 <= len(title) <= 100:
+        session['lists'].append({
+            "id": str(uuid4()),
+            "title": title,
+            "todos": []
+        })
+
+        session.modified = True
+        flash("The list has been created.", "success")
+        return redirect(url_for("get_lists"))
+
+    flash("Title must be between 1 and 100 chracters.", "error")
+    return render_template("/new_list.html", title=title)
 
 
 if __name__ == "__main__":
