@@ -1,3 +1,4 @@
+from todos.utils import error_for_list_title
 from uuid import uuid4
 from flask import (
     flash,
@@ -39,23 +40,20 @@ def get_lists():
 def create_list():
     title = request.form["list_title"].strip()
 
-    if any(lst["title"] == title for lst in session["lists"]):
-        flash("Title must be unique.", "error")
+    error = error_for_list_title(title, session["lists"])
+    if error:
+        flash(error, "error")
         return render_template("/new_list.html", title=title)
 
-    if 1 <= len(title) <= 100:
-        session['lists'].append({
-            "id": str(uuid4()),
-            "title": title,
-            "todos": []
-        })
+    session['lists'].append({
+        "id": str(uuid4()),
+        "title": title,
+        "todos": []
+    })
 
-        session.modified = True
-        flash("The list has been created.", "success")
-        return redirect(url_for("get_lists"))
-
-    flash("Title must be between 1 and 100 chracters.", "error")
-    return render_template("/new_list.html", title=title)
+    session.modified = True
+    flash("The list has been created.", "success")
+    return redirect(url_for("get_lists"))
 
 
 if __name__ == "__main__":
