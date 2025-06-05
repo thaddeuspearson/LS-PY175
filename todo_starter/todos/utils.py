@@ -31,7 +31,9 @@ def find_todo_by_id(todo_id: str, todo_list: list) -> dict | None:
 
 
 def delete_todo_by_id(todo_id: str, todo_lst: list) -> None:
-    todo_lst["todos"] = [todo for todo in todo_lst["todos"] if todo["id"] != todo_id]
+    todo_lst["todos"] = [
+        todo for todo in todo_lst["todos"] if todo["id"] != todo_id
+    ]
 
 
 def mark_all_todos_completed(todo_lst: list) -> None:
