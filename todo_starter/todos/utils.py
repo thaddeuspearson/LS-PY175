@@ -18,9 +18,9 @@ def error_for_todo(title: str) -> str | None:
     return error
 
 
-def find_todo_lst_by_id(todo_lst_id: str, lists: list) -> dict | None:
+def find_todo_list_by_id(todo_lst_id: str, todo_lists: list) -> dict | None:
     return next(
-        (lst for lst in lists if lst['id'] == todo_lst_id), None
+        (lst for lst in todo_lists if lst['id'] == todo_lst_id), None
     )
 
 
@@ -39,3 +39,9 @@ def delete_todo_by_id(todo_id: str, todo_lst: list) -> None:
 def mark_all_todos_completed(todo_lst: list) -> None:
     for todo in todo_lst["todos"]:
         todo["completed"] = not todo["completed"]
+
+
+def delete_todo_list_by_id(todo_list_id: str, todo_lists: list) -> None:
+    return [
+        lst for lst in todo_lists if lst["id"] != todo_list_id
+    ]
