@@ -45,3 +45,7 @@ def delete_todo_list_by_id(todo_list_id: str, todo_lists: list) -> None:
     return [
         lst for lst in todo_lists if lst["id"] != todo_list_id
     ]
+
+
+def todos_remaining(todo_lst: list) -> int:
+    return sum(1 for todo in todo_lst["todos"] if todo["completed"])

@@ -7,7 +7,7 @@
                 <li>
                     <a href="{{ url_for('display_list', list_id=lst.id) }}">
                         <h2>{{ lst.title }}</h2>
-                        <p>{{ lst.todos | length }}</p>
+                        <p>{{ todos_remaining(lst) }} / {{ lst.todos | length }}</p>
                     </a>
                 </li>
             {% endfor %}
