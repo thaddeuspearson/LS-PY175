@@ -1,12 +1,14 @@
 from todos.utils import (
+    delete_todo_by_id,
+    delete_todo_list_by_id,
     error_for_list_title,
     error_for_todo,
-    find_todo_list_by_id,
-    delete_todo_list_by_id,
     find_todo_by_id,
-    delete_todo_by_id,
+    find_todo_list_by_id,
+    is_list_completed,
     mark_all_todos_completed,
-    todos_remaining
+    todos_remaining,
+    
 )
 from werkzeug.exceptions import NotFound
 from uuid import uuid4
@@ -23,6 +25,13 @@ from flask import (
 
 app = Flask(__name__)
 app.secret_key = "th1515@b@ds3cr3t"
+
+
+@app.context_processor
+def list_utilities_processor():
+    return dict(
+        is_list_completed=is_list_completed,
+    )
 
 
 @app.before_request

@@ -47,5 +47,9 @@ def delete_todo_list_by_id(todo_list_id: str, todo_lists: list) -> None:
     ]
 
 
-def todos_remaining(todo_lst: list) -> int:
-    return sum(1 for todo in todo_lst["todos"] if todo["completed"])
+def todos_remaining(todo_lst: dict) -> int:
+    return sum(1 for todo in todo_lst["todos"] if not todo["completed"])
+
+
+def is_list_completed(todo_lst: list) -> bool:
+    return len(todo_lst["todos"]) > 0 and todos_remaining(todo_lst) == 0
