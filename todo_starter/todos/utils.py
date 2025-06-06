@@ -1,3 +1,6 @@
+from typing import Callable
+
+
 def error_for_list_title(title: str, lists: list) -> str | None:
     error = None
 
@@ -53,3 +56,20 @@ def todos_remaining(todo_lst: dict) -> int:
 
 def is_list_completed(todo_lst: list) -> bool:
     return len(todo_lst["todos"]) > 0 and todos_remaining(todo_lst) == 0
+
+
+def is_todo_completed(todo: dict) -> bool:
+    return todo["completed"]
+
+
+def sort_items(items: list, select_completed: Callable) -> list:
+    incompleted = []
+    completed = []
+
+    for lst in sorted(items, key=lambda item: item["title"].lower()):
+        if select_completed(lst):
+            completed.append(lst)
+        else:
+            incompleted.append(lst)
+
+    return incompleted + completed

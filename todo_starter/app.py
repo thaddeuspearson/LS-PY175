@@ -6,9 +6,10 @@ from todos.utils import (
     find_todo_by_id,
     find_todo_list_by_id,
     is_list_completed,
+    is_todo_completed,
     mark_all_todos_completed,
+    sort_items,
     todos_remaining,
-    
 )
 from werkzeug.exceptions import NotFound
 from uuid import uuid4
@@ -53,7 +54,8 @@ def add_todo_list():
 @app.route("/lists", methods=["GET"])
 def get_lists():
     return render_template('lists.html',
-                           lists=session["lists"],
+                           lists=sort_items(session["lists"],
+                                            is_list_completed),
                            todos_remaining=todos_remaining)
 
 
@@ -140,7 +142,7 @@ def display_list(list_id):
 
     if not lst:
         raise NotFound(description="List not Found")
-
+    lst["todos"] = sort_items(lst["todos"], is_todo_completed)
     return render_template("list.html", lst=lst)
 
 
