@@ -25,7 +25,6 @@ from uuid import uuid4
 from functools import wraps
 
 
-
 app = Flask(__name__)
 app.secret_key = "th1515@b@ds3cr3t"
 
