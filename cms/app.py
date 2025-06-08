@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 
 ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
-DATA_DIR_PATH = os.path.join(ROOT_PATH, "cms", "data")
+DATA_DIR_PATH = os.path.join(ROOT_PATH, "src", "cms", "data")
 
 
 @app.route("/")
