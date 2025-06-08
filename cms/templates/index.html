@@ -7,7 +7,7 @@
     <body>
         <ul>
             {% for filename in filenames %}
-                <li>{{ filename }}</li>
+                <li><a href="{{ url_for('display_file_content', filename=filename) }}">{{ filename }}</a></li>
             {% endfor %}
         </ul>
     </body>

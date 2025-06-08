@@ -1,6 +1,7 @@
 from flask import (
     Flask,
     render_template,
+    send_from_directory,
 )
 import os
 
@@ -8,16 +9,23 @@ import os
 app = Flask(__name__)
 
 
+ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
+DATA_DIR_PATH = os.path.join(ROOT_PATH, "cms", "data")
+
+
 @app.route("/")
 def index():
-    root = os.path.abspath(os.path.dirname(__file__))
-    data_dir = os.path.join(root, "cms", "data")
     filenames = [
-        f for f in os.listdir(data_dir)
-        if os.path.isfile(os.path.join(data_dir, f))
+        f for f in os.listdir(DATA_DIR_PATH)
+        if os.path.isfile(os.path.join(DATA_DIR_PATH, f))
     ]
     print(os.path.abspath(os.path.dirname(__file__)))
     return render_template('index.html', filenames=filenames)
+
+
+@app.route("/<filename>")
+def display_file_content(filename):
+    return send_from_directory(DATA_DIR_PATH, filename)
 
 
 if __name__ == "__main__":
