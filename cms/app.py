@@ -19,7 +19,6 @@ def index():
         f for f in os.listdir(DATA_DIR_PATH)
         if os.path.isfile(os.path.join(DATA_DIR_PATH, f))
     ]
-    print(os.path.abspath(os.path.dirname(__file__)))
     return render_template('index.html', filenames=filenames)
 
 
