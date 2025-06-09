@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>CMS</title>
+        <title>File List</title>
         <meta charset="utf-8">
     </head>
     <body>
@@ -10,7 +10,10 @@
         {% endfor %}
         <ul>
             {% for filename in filenames %}
-                <li><a href="{{ url_for('display_file_content', filename=filename) }}">{{ filename }}</a></li>
+                <li>
+                    <a href="{{ url_for('display_file_content', filename=filename) }}">{{ filename }}</a>
+                    <a href="{{ url_for('edit_file_content', filename=filename) }}">edit</a>
+                </li>
             {% endfor %}
         </ul>
     </body>

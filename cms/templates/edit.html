@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit File</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <form action="{{ url_for('save_file', filename=filename)}}" method="post">
+        <fieldset>
+            <label for="content">Edit content of {{ filename }}:</label>
+                <div>
+                    <textarea name="content" rows="20" cols="80">{{ content }}</textarea>
+                </div>
+            <button type="submit">Save Changes</button>
+        </fieldset>
+    </form>
+</body>
+</html>
