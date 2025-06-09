@@ -5,6 +5,9 @@
         <meta charset="utf-8">
     </head>
     <body>
+        {% for message in get_flashed_messages() %}
+            <p>{{ message }}</p>
+        {% endfor %}
         <ul>
             {% for filename in filenames %}
                 <li><a href="{{ url_for('display_file_content', filename=filename) }}">{{ filename }}</a></li>
