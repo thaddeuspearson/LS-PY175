@@ -32,3 +32,8 @@ class TestApp(unittest.TestCase):
         with self.client.get("/") as response:
             self.assertEqual(response.status_code, 200)
             self.assertNotIn("does not exist", response.get_data(as_text=True))
+
+    def test_display_file_content_md_file(self):
+        with self.client.get("about.md") as response:
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("About", response.get_data(as_text=True))
