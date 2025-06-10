@@ -17,14 +17,22 @@ app.secret_key = "th1515@b@ds3cr3t"
 
 
 ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
-DATA_DIR_PATH = os.path.join(ROOT_PATH, "src", "cms", "data")
+
+
+def get_data_dir_path():
+    if app.config["TESTING"]:
+        path = os.path.join(ROOT_PATH, "tests", "data")
+    else:
+        path = os.path.join(ROOT_PATH, "src", "cms", "data")
+    return path
 
 
 def require_filepath(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        data_dir_path = get_data_dir_path()
         filename = kwargs.get("filename")
-        file_path = os.path.join(DATA_DIR_PATH, filename)
+        file_path = os.path.join(data_dir_path, filename)
 
         if os.path.isfile(file_path):
             return f(file_path=file_path, *args, **kwargs)
@@ -36,9 +44,10 @@ def require_filepath(f):
 
 @app.route("/")
 def index():
+    data_dir_path = get_data_dir_path()
     filenames = [
-        f for f in os.listdir(DATA_DIR_PATH)
-        if os.path.isfile(os.path.join(DATA_DIR_PATH, f))
+        f for f in os.listdir(data_dir_path)
+        if os.path.isfile(os.path.join(data_dir_path, f))
     ]
     return render_template('index.html', filenames=filenames)
 
@@ -46,11 +55,12 @@ def index():
 @app.route("/<filename>")
 @require_filepath
 def display_file_content(filename, file_path):
+    data_dir_path = get_data_dir_path()
     if filename.endswith(".md"):
         with open(file_path) as f:
             content = f.read()
             return markdown(content)
-    return send_from_directory(DATA_DIR_PATH, filename)
+    return send_from_directory(data_dir_path, filename)
 
 
 @app.route("/<filename>/edit")
