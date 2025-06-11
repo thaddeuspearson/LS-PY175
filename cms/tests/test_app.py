@@ -35,7 +35,8 @@ class TestApp(unittest.TestCase):
         with self.client.get("/history.txt") as response:
             data = response.get_data(as_text=True)
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.content_type, "text/plain; charset=utf-8")
+            self.assertEqual(response.content_type,
+                             "text/plain; charset=utf-8")
             self.assertIn("Billy Bob Joe Steve", data)
 
     def test_display_file_content_redirects_not_found(self):
@@ -61,8 +62,7 @@ class TestApp(unittest.TestCase):
             self.assertIn("<h1>About</h1>", data)
 
     def test_get_edit_file_content(self):
-        self.create_test_document("changes.txt",
-                                  'These are the changes')
+        self.create_test_document("changes.txt", 'These are the changes')
 
         with self.client.get("/changes.txt/edit") as response:
             data = response.get_data(as_text=True)
@@ -71,8 +71,8 @@ class TestApp(unittest.TestCase):
             self.assertIn("These are the changes", data)
 
     def test_save_file(self):
-        self.create_test_document("changes.txt",
-                                  'This should be overwritten')
+        self.create_test_document("changes.txt", 'To be overwritten')
+
         with self.client.post("/changes.txt",
                               data={'content': 'test content'}) as response:
             self.assertEqual(response.status_code, 302)
@@ -97,24 +97,36 @@ class TestApp(unittest.TestCase):
 
     def test_create_document(self):
         with self.client.post("/new",
-                              data={"filename": "test_file.txt"}) as response:
-            self.assertEqual(response.status_code, 302)
-
-        with self.client.get(response.headers["Location"]) as response:
+                              data={"filename": "test_file.txt"},
+                              follow_redirects=True) as response:
             data = response.get_data(as_text=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn("test_file.txt", data)
             self.assertIn("test_file.txt was created.", data)
 
-        with self.client.post(
-                "/new", data={"filename": "test_file.txt"}) as response:
+        with self.client.post("/new",
+                              data={"filename": "test_file.txt"}) as response:
             data = response.get_data(as_text=True)
             self.assertEqual(response.status_code, 422)
             self.assertIn("test_file.txt already exists.", data)
 
     def test_create_document_without_filename(self):
-        with self.client.post(
-                "/new", data={"filename": ""}) as response:
+        with self.client.post("/new", 
+                              data={"filename": ""}) as response:
             data = response.get_data(as_text=True)
             self.assertEqual(response.status_code, 422)
             self.assertIn("A name is required.", data)
+
+    def test_delete_file(self):
+        self.create_test_document("test_doc.txt", "This should be deleted")
+
+        with self.client.get("/") as response:
+            data = response.get_data(as_text=True)
+            self.assertIn('<a href="/test_doc.txt"', data)
+
+        with self.client.post("/test_doc.txt/delete",
+                              follow_redirects=True) as response:
+            data = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("test_doc.txt has been deleted.", data)
+            self.assertNotIn('<a href="/test_doc.txt"', data)
