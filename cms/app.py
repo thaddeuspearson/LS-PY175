@@ -108,5 +108,14 @@ def create_document():
     return redirect(url_for('index'))
 
 
+@app.route("/<filename>/delete", methods={"POST"})
+@require_filepath
+def delete_file(filename, file_path):
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        flash(f"{filename} has been deleted.")
+        return redirect(url_for('index'))
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5003)
