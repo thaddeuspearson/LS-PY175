@@ -8,6 +8,7 @@
                 <a href="{{ url_for('edit_file_content', filename=filename) }}">edit</a>
             </li>
         {% endfor %}
+        <p><a href="{{ url_for('new_document') }}">New Document</a></p>
     </ul>
 {% endblock %}
 

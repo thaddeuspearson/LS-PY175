@@ -59,8 +59,8 @@ def display_file_content(filename, file_path):
     if filename.endswith(".md"):
         with open(file_path) as f:
             content = f.read()
-            return markdown(content)
-    return send_from_directory(data_dir_path, filename)
+            return render_template('markdown.html', content=markdown(content))
+    return send_from_directory(data_dir_path, filename, as_attachment=False)
 
 
 @app.route("/<filename>/edit")
@@ -80,6 +80,31 @@ def save_file(filename, file_path):
         f.write(updated_content)
 
     flash(f"{filename} has been updated.")
+    return redirect(url_for('index'))
+
+
+@app.route('/new')
+def new_document():
+    return render_template("new.html")
+
+
+@app.route("/new", methods=["POST"])
+def create_document():
+    data_dir_path = get_data_dir_path()
+    filename = request.form["filename"]
+    file_path = os.path.join(data_dir_path, filename)
+
+    if not filename:
+        flash("A name is required.")
+        return render_template('new.html'), 422
+    elif os.path.exists(file_path):
+        flash(f"{filename} already exists.")
+        return render_template('new.html'), 422
+
+    with open(file_path, "w") as f:
+        f.write("")
+
+    flash(f"{filename} was created.")
     return redirect(url_for('index'))
 
 
