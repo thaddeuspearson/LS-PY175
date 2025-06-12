@@ -5,6 +5,7 @@ from flask import (
     redirect,
     render_template,
     send_from_directory,
+    session,
     request,
     url_for
 )
@@ -89,7 +90,8 @@ def new_document():
 
 
 @app.route("/new", methods=["POST"])
-def create_document():
+@require_filepath
+def create_document(filename, file_path):
     data_dir_path = get_data_dir_path()
     filename = request.form["filename"]
     file_path = os.path.join(data_dir_path, filename)
@@ -115,6 +117,32 @@ def delete_file(filename, file_path):
         os.remove(file_path)
         flash(f"{filename} has been deleted.")
         return redirect(url_for('index'))
+
+
+@app.route("/users/signin")
+def render_signin():
+    return render_template('signin.html')
+
+
+@app.route("/users/signin", methods=["POST"])
+def signin():
+    username = request.form["username"]
+    password = request.form["password"]
+
+    if (username == "admin" and password == "password"):
+        session["username"] = username
+        flash("Welcome")
+        return redirect(url_for('index'))
+    else:
+        flash("Invalid credentials")
+        return render_template('signin.html'), 422
+
+
+@app.route("/users/signout", methods=['POST'])
+def signout():
+    session.pop('username', None)
+    flash("You have been signed out")
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":

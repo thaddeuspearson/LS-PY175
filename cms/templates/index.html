@@ -9,10 +9,20 @@
                 <form class="inline" action="{{ url_for('delete_file', filename=filename) }}" method="post">
                     <button type="submit">Delete</button>
                 </form>
-            </li>
-            
+            </li>  
         {% endfor %}
+        
         <p><a href="{{ url_for('new_document') }}">New Document</a></p>
+        
+        <form action="{{ url_for('signout') }}" method="post">
+            {% if session.username %}
+                <p class="user-status">Signed in as {{ session.username }}.
+                    <button type="submit">Sign Out</button>
+                </p>
+            {% else %}
+                <p class="user-status"><a href="{{ url_for('render_signin') }}">Sign In</a></p>
+            {% endif %}
+        </form>
     </ul>
 {% endblock %}
 
