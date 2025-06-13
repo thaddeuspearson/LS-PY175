@@ -1,5 +1,5 @@
 import os
-from flask import (
+from flask import (  # type: ignore
     flash,
     Flask,
     redirect,
@@ -10,7 +10,7 @@ from flask import (
     url_for
 )
 from functools import wraps
-from markdown import markdown
+from markdown import markdown  # type: ignore
 
 
 app = Flask(__name__)
