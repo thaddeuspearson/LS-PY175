@@ -11,7 +11,7 @@ from flask import (  # type: ignore
 )
 from functools import wraps
 from markdown import markdown  # type: ignore
-from yaml import safe_load
+from yaml import safe_load  # type: ignore
 
 
 app = Flask(__name__)
