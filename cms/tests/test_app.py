@@ -201,8 +201,8 @@ class TestApp(unittest.TestCase):
 
     def test_signin(self):
         with self.client.post("/users/signin",
-                              data={"username": 'admin',
-                                    "password": "password"},
+                              data={"username": 'test_admin',
+                                    "password": "test_password"},
                               follow_redirects=True) as response:
             data = response.get_data(as_text=True)
             self.assertEqual(response.status_code, 200)
@@ -218,10 +218,7 @@ class TestApp(unittest.TestCase):
             self.assertIn("Sign In</button>", data)
 
     def test_signout(self):
-        self.client.post("/users/signin",
-                         data={"username": 'admin',
-                               "password": "password"},
-                         follow_redirects=True)
+        self.admin_session()
         with self.client.post("/users/signout",
                               follow_redirects=True) as response:
             data = response.get_data(as_text=True)

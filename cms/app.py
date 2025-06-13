@@ -11,6 +11,7 @@ from flask import (  # type: ignore
 )
 from functools import wraps
 from markdown import markdown  # type: ignore
+from yaml import safe_load
 
 
 app = Flask(__name__)
@@ -20,12 +21,17 @@ app.secret_key = "th1515@b@ds3cr3t"
 ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
-def get_data_dir_path():
-    if app.config["TESTING"]:
-        path = os.path.join(ROOT_PATH, "tests", "data")
-    else:
-        path = os.path.join(ROOT_PATH, "src", "cms", "data")
-    return path
+def get_dir_path(basename):
+    base_dir = os.path.join(
+        ROOT_PATH, "tests" if app.config["TESTING"] else "src", "cms"
+    )
+    return os.path.join(base_dir, basename)
+
+
+def load_user_creds():
+    user_creds_path = get_dir_path("users.yaml")
+    with open(user_creds_path, "r") as user_creds:
+        return safe_load(user_creds)
 
 
 def user_signed_in():
@@ -46,7 +52,7 @@ def require_signin(f):
 def require_filepath(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        data_dir_path = get_data_dir_path()
+        data_dir_path = get_dir_path("data")
         filename = kwargs.get("filename")
         file_path = os.path.join(data_dir_path, filename)
 
@@ -60,7 +66,7 @@ def require_filepath(f):
 
 @app.route("/")
 def index():
-    data_dir_path = get_data_dir_path()
+    data_dir_path = get_dir_path("data")
     filenames = [
         f for f in os.listdir(data_dir_path)
         if os.path.isfile(os.path.join(data_dir_path, f))
@@ -71,7 +77,7 @@ def index():
 @app.route("/<filename>")
 @require_filepath
 def display_file_content(filename, file_path):
-    data_dir_path = get_data_dir_path()
+    data_dir_path = get_dir_path("data")
     if filename.endswith(".md"):
         with open(file_path) as f:
             content = f.read()
@@ -110,7 +116,7 @@ def new_document():
 @app.route("/new", methods=["POST"])
 @require_signin
 def create_document():
-    data_dir_path = get_data_dir_path()
+    data_dir_path = get_dir_path("data")
     filename = request.form["filename"]
     file_path = os.path.join(data_dir_path, filename)
 
@@ -147,8 +153,8 @@ def render_signin():
 def signin():
     username = request.form["username"]
     password = request.form["password"]
-
-    if (username == "admin" and password == "password"):
+    users = load_user_creds()
+    if users.get(username) == password:
         session["username"] = username
         flash("Welcome")
         return redirect(url_for('index'))
