@@ -28,9 +28,24 @@ def get_data_dir_path():
     return path
 
 
+def user_signed_in():
+    return 'username' in session
+
+
+def require_signin(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not user_signed_in():
+            flash("You must be signed in to do that.")
+            return redirect(url_for("render_signin"))
+
+        return f(*args, **kwargs)
+    return wrapper
+
+
 def require_filepath(f):
     @wraps(f)
-    def decorated_function(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         data_dir_path = get_data_dir_path()
         filename = kwargs.get("filename")
         file_path = os.path.join(data_dir_path, filename)
@@ -40,7 +55,7 @@ def require_filepath(f):
 
         flash(f"{filename} does not exist.")
         return redirect(url_for('index'))
-    return decorated_function
+    return wrapper
 
 
 @app.route("/")
@@ -65,6 +80,7 @@ def display_file_content(filename, file_path):
 
 
 @app.route("/<filename>/edit")
+@require_signin
 @require_filepath
 def edit_file_content(filename, file_path):
     with open(file_path, "r") as f:
@@ -73,6 +89,7 @@ def edit_file_content(filename, file_path):
 
 
 @app.route("/<filename>", methods=["POST"])
+@require_signin
 @require_filepath
 def save_file(filename, file_path):
     updated_content = request.form["content"]
@@ -85,11 +102,13 @@ def save_file(filename, file_path):
 
 
 @app.route('/new')
+@require_signin
 def new_document():
     return render_template("new.html")
 
 
 @app.route("/new", methods=["POST"])
+@require_signin
 def create_document():
     data_dir_path = get_data_dir_path()
     filename = request.form["filename"]
@@ -110,6 +129,7 @@ def create_document():
 
 
 @app.route("/<filename>/delete", methods={"POST"})
+@require_signin
 @require_filepath
 def delete_file(filename, file_path):
     if os.path.exists(file_path):
