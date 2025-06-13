@@ -90,8 +90,7 @@ def new_document():
 
 
 @app.route("/new", methods=["POST"])
-@require_filepath
-def create_document(filename, file_path):
+def create_document():
     data_dir_path = get_data_dir_path()
     filename = request.form["filename"]
     file_path = os.path.join(data_dir_path, filename)

@@ -111,7 +111,7 @@ class TestApp(unittest.TestCase):
             self.assertIn("test_file.txt already exists.", data)
 
     def test_create_document_without_filename(self):
-        with self.client.post("/new", 
+        with self.client.post("/new",
                               data={"filename": ""}) as response:
             data = response.get_data(as_text=True)
             self.assertEqual(response.status_code, 422)
@@ -130,3 +130,37 @@ class TestApp(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn("test_doc.txt has been deleted.", data)
             self.assertNotIn('<a href="/test_doc.txt"', data)
+
+    def test_render_signin(self):
+        with self.client.get('/users/signin',
+                             follow_redirects=True) as response:
+            self.assertEqual(response.status_code, 200)
+
+    def test_signin(self):
+        with self.client.post("/users/signin",
+                              data={"username": 'admin',
+                                    "password": "password"},
+                              follow_redirects=True) as response:
+            data = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("admin", data)
+
+    def test_signin_with_bad_creds(self):
+        with self.client.post("/users/signin",
+                              data={"username": 'ooga',
+                                    "password": "booga"},
+                              follow_redirects=True) as response:
+            data = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 422)
+            self.assertIn("Sign In</button>", data)
+
+    def test_signout(self):
+        self.client.post("/users/signin",
+                         data={"username": 'admin',
+                               "password": "password"},
+                         follow_redirects=True)
+        with self.client.post("/users/signout",
+                              follow_redirects=True) as response:
+            data = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("signed out", data)
