@@ -19,6 +19,11 @@ class TestApp(unittest.TestCase):
         with open(os.path.join(self.data_path, name), "w") as f:
             f.write(content)
 
+    def admin_session(self):
+        with self.client as c:
+            with c.session_transaction() as session:
+                session['username'] = "admin"
+
     def test_index(self):
         self.create_test_document("changes.txt")
         self.create_test_document("about.md")
@@ -62,6 +67,7 @@ class TestApp(unittest.TestCase):
             self.assertIn("<h1>About</h1>", data)
 
     def test_get_edit_file_content(self):
+        self.admin_session()
         self.create_test_document("changes.txt", 'These are the changes')
 
         with self.client.get("/changes.txt/edit") as response:
@@ -70,7 +76,18 @@ class TestApp(unittest.TestCase):
             self.assertIn("Edit content", data)
             self.assertIn("These are the changes", data)
 
+    def test_get_edit_file_content_signed_out(self):
+        self.create_test_document("changes.txt", 'These are the changes')
+
+        with self.client.get("/changes.txt/edit",
+                             follow_redirects=True) as response:
+            data = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("You must be signed in to do that.", data)
+            self.assertIn("Username", data)
+
     def test_save_file(self):
+        self.admin_session()
         self.create_test_document("changes.txt", 'To be overwritten')
 
         with self.client.post("/changes.txt",
@@ -88,14 +105,35 @@ class TestApp(unittest.TestCase):
             self.assertNotIn("this should be overwritten", data)
             self.assertIn("test content", data)
 
+    def test_save_file_signed_out(self):
+        self.create_test_document("changes.txt", 'To be overwritten')
+
+        with self.client.post("/changes.txt",
+                              data={'content': 'test content'},
+                              follow_redirects=True) as response:
+            data = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("You must be signed in to do that.", data)
+            self.assertIn("Username", data)
+
     def test_new(self):
+        self.admin_session()
         with self.client.get("/new") as response:
             data = response.get_data(as_text=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn("<input", data)
             self.assertIn("Create</button>", data)
 
+    def test_new_signed_out(self):
+        with self.client.get("/new",
+                             follow_redirects=True) as response:
+            data = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("You must be signed in to do that.", data)
+            self.assertIn("Username", data)
+
     def test_create_document(self):
+        self.admin_session()
         with self.client.post("/new",
                               data={"filename": "test_file.txt"},
                               follow_redirects=True) as response:
@@ -110,7 +148,17 @@ class TestApp(unittest.TestCase):
             self.assertEqual(response.status_code, 422)
             self.assertIn("test_file.txt already exists.", data)
 
+    def test_create_document_signed_out(self):
+        with self.client.post("/new",
+                              data={"filename": "test_file.txt"},
+                              follow_redirects=True) as response:
+            data = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("You must be signed in to do that.", data)
+            self.assertIn("Username", data)
+
     def test_create_document_without_filename(self):
+        self.admin_session()
         with self.client.post("/new",
                               data={"filename": ""}) as response:
             data = response.get_data(as_text=True)
@@ -118,6 +166,7 @@ class TestApp(unittest.TestCase):
             self.assertIn("A name is required.", data)
 
     def test_delete_file(self):
+        self.admin_session()
         self.create_test_document("test_doc.txt", "This should be deleted")
 
         with self.client.get("/") as response:
@@ -130,6 +179,20 @@ class TestApp(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn("test_doc.txt has been deleted.", data)
             self.assertNotIn('<a href="/test_doc.txt"', data)
+
+    def test_delete_file_signed_out(self):
+        self.create_test_document("test_doc.txt", "This should be deleted")
+
+        with self.client.get("/") as response:
+            data = response.get_data(as_text=True)
+            self.assertIn('<a href="/test_doc.txt"', data)
+
+        with self.client.post("/test_doc.txt/delete",
+                              follow_redirects=True) as response:
+            data = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("You must be signed in to do that.", data)
+            self.assertIn('Username', data)
 
     def test_render_signin(self):
         with self.client.get('/users/signin',
