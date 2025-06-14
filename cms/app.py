@@ -1,4 +1,4 @@
-import os
+from bcrypt import checkpw
 from flask import (  # type: ignore
     flash,
     Flask,
@@ -11,6 +11,7 @@ from flask import (  # type: ignore
 )
 from functools import wraps
 from markdown import markdown  # type: ignore
+import os
 from yaml import safe_load  # type: ignore
 
 
@@ -22,16 +23,23 @@ ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
 def get_dir_path(basename):
-    base_dir = os.path.join(
-        ROOT_PATH, "tests" if app.config["TESTING"] else "src", "cms"
-    )
-    return os.path.join(base_dir, basename)
+    if app.config["TESTING"]:
+        path = os.path.join(ROOT_PATH, "tests", basename)
+    else:
+        path = os.path.join(ROOT_PATH, "src", "cms", basename)
+    return path
 
 
 def load_user_creds():
     user_creds_path = get_dir_path("users.yaml")
     with open(user_creds_path, "r") as user_creds:
         return safe_load(user_creds)
+
+
+def valid_creds(username, password):
+    credentials = load_user_creds()
+    encoded_pw = credentials.get(username, '').encode('utf-8')
+    return checkpw(password.encode('utf-8'), encoded_pw)
 
 
 def user_signed_in():
@@ -153,8 +161,8 @@ def render_signin():
 def signin():
     username = request.form["username"]
     password = request.form["password"]
-    users = load_user_creds()
-    if users.get(username) == password:
+
+    if valid_creds(username, password):
         session["username"] = username
         flash("Welcome")
         return redirect(url_for('index'))
