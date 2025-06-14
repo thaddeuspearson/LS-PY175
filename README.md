@@ -19,13 +19,13 @@ Repository for working through Launch School's PY175 Course
 - New flask app with poetry workflow:
 
 
-    1. Create a new "poetry" project 
+    1. Create a new "poetry" project:
 
         ```
         poetry new <project-name>
         ```
 
-    1. In the root directory created by "poetry", create a new file
+    1. In the root directory created by "poetry", create a new file:
 
         ```
         touch app.py
