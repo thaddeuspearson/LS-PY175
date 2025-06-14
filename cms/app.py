@@ -1,4 +1,4 @@
-from bcrypt import checkpw
+from bcrypt import checkpw  # type: ignore
 from flask import (  # type: ignore
     flash,
     Flask,
