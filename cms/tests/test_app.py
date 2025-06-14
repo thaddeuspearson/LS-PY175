@@ -210,7 +210,7 @@ class TestApp(unittest.TestCase):
 
     def test_signin_with_bad_creds(self):
         with self.client.post("/users/signin",
-                              data={"username": 'ooga',
+                              data={"username": 'test_admin',
                                     "password": "booga"},
                               follow_redirects=True) as response:
             data = response.get_data(as_text=True)

@@ -1,3 +1,3 @@
-test_admin: test_password
-test_developer: test_qwerty
-test_user: test_abc123
+test_admin: "$2b$12$tPQakq3KqM2X7wPdW8NZx./PMDzOm/7gfEZXMVWWNY5nr9oOm2RGu"
+test_developer: "$2b$12$E0l30mOa.1fTRTLf64PpWuTyYI6e/hUAj/DvZSRbaPSUtFGEuXGT6"
+test_user: "$2b$12$bQRKaDfFcTS.nCWLE7.6XOfFWICKKTeC9TMWNeSRdB.zaevhtn54y"
